@@ -30,7 +30,7 @@ const getAllDoctor = async (req, res) => {
       "docSpecialization",
       "-_id -categoryDesc"
     );
-    console.log(doctors);
+
     res.status(200).json(doctors);
   } catch (err) {
     next(err);
@@ -51,6 +51,7 @@ const createDoctor = async (req, res) => {
       message: `Doctor ${doctor.docFName} ${doctor.docLName} is successfully created.`,
     });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ message: err.message });
   }
 };

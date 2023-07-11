@@ -10,6 +10,7 @@ const getSpecialization = async (req, res, next) => {
 const getAllSpecialization = async (req, res, next) => {
   try {
     const specializations = await Specialization.find({}, { _id: 0 });
+    console.log(specializations);
     res.status(200).json(specializations);
   } catch (err) {
     next(err);

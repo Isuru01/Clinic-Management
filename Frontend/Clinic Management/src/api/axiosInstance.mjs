@@ -1,9 +1,12 @@
 import axios from "axios";
 
-const instance = axios.create({
-  baseURL: "https://some-domain.com/api/",
-  timeout: 1000,
-  headers: { "X-Custom-Header": "foobar" },
-});
+const AxiosInstance = () => {
+  const instance = axios.create({
+    baseURL: "http://localhost:8080/api",
+    timeout: 1000,
+  });
 
-return instance;
+  return instance;
+};
+
+export default AxiosInstance;

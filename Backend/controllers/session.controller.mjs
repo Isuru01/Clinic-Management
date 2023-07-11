@@ -27,41 +27,31 @@ const getAllSession = async (req, res, next) => {
 };
 
 const createSession = async (req, res, next) => {
-  const { docSpecialization, docLiscense, schedule, fee } = req.body;
+  const { specialization, doctor, schedule, fee } = req.body;
+
   try {
-    const specialization = await Specialization.findOne(
+    const { _id: docID, docSpecialization: specID } = await Doctor.findOne(
       {
-        categoryHeader: docSpecialization,
+        key: doctor,
       },
-      { _id: 1 }
+      { _id: 1, docSpecialization: 1 }
     );
 
-    const doctor = await Doctor.findOne(
-      {
-        docLiscense,
-      },
-      { _id: 1 }
-    );
-
+    console.log(req.body);
     const days = Object.keys(schedule);
 
     await Doctor.updateOne(
-      { _id: doctor },
+      { _id: docID },
       { $addToSet: { available: { $each: days } } }
     );
 
-    const { _id: charge } = await Fee.create({
-      consulation: 2000.0,
-      service: 20,
-      tax: 5,
-    });
+    const { _id: feeID } = await Fee.create(fee);
 
     const sessions = days.map((day) => ({
-      specialization,
-      consultationFee: 3000.0,
-      doctor,
-      day,
-      fee: charge,
+      specialization: specID,
+      doctor: docID,
+      fee: feeID,
+      day: day,
       ...schedule[day],
     }));
 
@@ -69,7 +59,7 @@ const createSession = async (req, res, next) => {
 
     for (const session of insertedSessions) {
       await Doctor.updateOne(
-        { _id: doctor },
+        { _id: docID },
         { $addToSet: { sessions: session._id } }
       );
     }

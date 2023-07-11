@@ -34,4 +34,18 @@ const search = async (req, res, next) => {
   }
 };
 
-export { search };
+const getDocList = async (req, res, next) => {
+  try {
+    const doctors = await Doctor.find(
+      {},
+      { _id: 0, key: 1, docFName: 1, docLName: 1, docSpecialization: 1 }
+    ).populate("docSpecialization", "-_id -categoryDesc");
+
+    res.status(200).json(doctors);
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+};
+
+export { search, getDocList };

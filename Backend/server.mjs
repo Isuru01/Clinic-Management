@@ -5,9 +5,9 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import { connectDB } from "./config/db.config.mjs";
+import { createEvent } from "./controllers/event.controller.mjs";
 import cron from "node-cron";
 import cookieParser from "cookie-parser";
-import { createEvent } from "./controllers/event.controller.mjs";
 import errorHandler from "./middleware/errorHandler.mjs";
 import authenticate from "./middleware/authenticate.mjs";
 import router_user from "./routes/user.router.mjs";
@@ -18,6 +18,7 @@ import router_session from "./routes/session.router.mjs";
 import router_patient from "./routes/patient.router.mjs";
 import router_specialization from "./routes/specialization.router.mjs";
 import router_event from "./routes/event.router.mjs";
+
 const app = express();
 
 //middlewares
@@ -35,6 +36,7 @@ app.use(json());
 app.use(cookieParser());
 app.use(urlencoded({ extended: true }));
 
+//not in use don't uncomment
 // app.use(
 //   session({
 //     secret: "YOUR_SECRET_KEY",
@@ -45,10 +47,11 @@ app.use(urlencoded({ extended: true }));
 
 app.use("/api/user", router_user);
 
-app.use(authenticate);
-app.get("/api/authenticate", (req, res, next) => {
-  next();
-});
+//authenticate the using middleware and cookie befor use uncomment
+// app.use(authenticate);
+// app.get("/api/authenticate", (req, res, next) => {
+//   next();
+// });
 app.use("/api/payment", router_payment);
 app.use("/api/search", router_search);
 app.use("/api/doctor", router_doctor);

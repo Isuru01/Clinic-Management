@@ -1,7 +1,12 @@
 import axiosInstance from "./axiosInstance.mjs";
 
-const getDoctor = async () => {
+const getDoc = async () => {
   const result = await axiosInstance(BA);
 };
 
-export { getDoctor };
+const createDoc = async (doctor) => {
+  console.log("doc", doctor);
+  const result = await axiosInstance().post("/doctor", doctor);
+};
+
+export { getDoc, createDoc };
