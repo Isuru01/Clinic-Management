@@ -1,3 +1,5 @@
+import pkg from "body-parser";
+const { json } = pkg;
 import Doctor from "../models/doctor.model.mjs";
 import Specialization from "../models/specialization.model.mjs";
 
@@ -48,4 +50,16 @@ const getDocList = async (req, res, next) => {
   }
 };
 
-export { search, getDocList };
+const getSpecList = async (req, res, next) => {
+  try {
+    const specializations = await Specialization.find(
+      {},
+      { _id: 0, categoryDesc: 0 }
+    );
+
+    res.status(200).json(specializations);
+  } catch (err) {
+    next(err);
+  }
+};
+export { search, getDocList, getSpecList };

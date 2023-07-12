@@ -5,4 +5,9 @@ const fetchDocList = async () => {
   return result.data;
 };
 
-export { fetchDocList };
+const fetchSpecList = async () => {
+  const result = await AxiosInstance().get("/search/specialization");
+  return result.data;
+};
+
+export { fetchDocList, fetchSpecList };
