@@ -1,44 +1,97 @@
-import React from "react";
-import { Box, Autocomplete, TextField } from "@mui/material";
+import { useState } from "react";
+import SearchResult from "../components/searchResult";
+import { Box, Autocomplete, TextField, Button } from "@mui/material";
 import SessionCard from "../components/cards/SessionCard";
-import doctors from "../utils/doc.search.mjs";
-import { useFetchDocs, useFetchSpecs } from "../hooks/useSearch.mjs";
+import useMappedDocs from "../hooks/useMappedDocs.mjs";
+import useMappedSpecs from "../hooks/useMappedSpecs.mjs";
+import { useNavigate } from "react-router-dom";
+import { useSearch } from "../hooks/useSearch.mjs";
 
 const specialization = [];
 
-console.log(doctors);
-
 const Search = () => {
-  const { isLoading: docLoading, data: docList } = useFetchDocs({
-    onError: (err) => {},
-    onSuccess: (message) => {},
+  const naviagate = useNavigate();
+  const [click, setClick] = useState(false);
+  const [search, setSearch] = useState({
+    doctor: "",
+    specialization: "",
   });
 
-  const { isLoading: specLoading, data: specList } = useFetchSpecs({
-    onError: (err) => {},
-    onSuccess: (message) => {},
+  const params = new URLSearchParams(search);
+  const queryString = params.toString();
+
+  const { isLoading: docLoading, doctors } = useMappedDocs();
+  const { isLoading: specLoading, specializations } = useMappedSpecs();
+  const { isLoading: searchLoading, data: searchResult } = useSearch({
+    onError: (error) => {},
+    onSuccess: (data) => {
+      setClick(false);
+    },
+    query: queryString,
+    isClicked: click,
   });
 
-  if (docLoading && specLoading) return <div>Loading</div>;
+  console.log(searchResult);
 
-  console.log(specList, docList);
+  if (specLoading || docLoading) return <div>Loading...</div>;
+
+  const handleSearch = () => {
+    naviagate(`/search?=${queryString}`);
+    setClick(true);
+  };
+
+  console.log(click);
   return (
     <Box sx={{ backgroundColor: "#ffff" }}>
       <Box>
-        <Box sx={{ md: { display: "-moz-initial" }, lg: { display: "flex" } }}>
-          <Autocomplete
-            options={doctors}
-            renderInput={(params) => <TextField {...params} label="Doctor" />}
-          />
-          <Autocomplete
-            options={specialization}
-            renderInput={(params) => (
-              <TextField {...params} label="Specialization" />
-            )}
-          />
+        <Box>
+          <Box
+            sx={{
+              display: { md: "flex" },
+              gap: { md: 2 },
+              p: { md: 10, sm: 4 },
+            }}
+          >
+            <Autocomplete
+              fullWidth
+              options={doctors}
+              value={search.doctor}
+              onChange={(event, doc) => {
+                setSearch((prev) => ({
+                  ...prev,
+                  doctor: doc?.label,
+                  specialization: doc?.specialization,
+                }));
+              }}
+              renderInput={(params) => <TextField {...params} label="Doctor" />}
+            />
+
+            <Autocomplete
+              fullWidth
+              value={search.specialization}
+              options={specializations}
+              onChange={(event, spec) => {
+                setSearch((prev) => ({
+                  ...prev,
+                  specialization: spec?.label,
+                }));
+              }}
+              renderInput={(params) => (
+                <TextField {...params} label="Specialization" />
+              )}
+            />
+
+            <Button
+              onClick={handleSearch}
+              sx={{ minWidth: "120px" }}
+              variant="contained"
+            >
+              Search
+            </Button>
+          </Box>
         </Box>
 
-        <SessionCard />
+        <SearchResult result={searchResult} />
       </Box>
     </Box>
   );

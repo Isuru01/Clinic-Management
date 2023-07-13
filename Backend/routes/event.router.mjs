@@ -7,7 +7,7 @@ import {
 const router = Router();
 
 router.route("/").get().post();
-router.route("/byDoc").get(getEventByDoctor);
+router.route("/bydoc/:id").get(getEventByDoctor);
 router.route("/:id").get(getEvent).put().delete();
 
 export default router;

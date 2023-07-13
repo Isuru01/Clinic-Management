@@ -10,4 +10,9 @@ const fetchSpecList = async () => {
   return result.data;
 };
 
-export { fetchDocList, fetchSpecList };
+const searchQuery = async ({ queryKey }) => {
+  const result = await AxiosInstance().get(`/search?=${queryKey[1]}`);
+  return result.data;
+};
+
+export { fetchDocList, fetchSpecList, searchQuery };

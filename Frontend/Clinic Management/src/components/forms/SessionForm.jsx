@@ -1,4 +1,5 @@
 import { useState } from "react";
+import useMappedDocs from "../../hooks/useMappedDocs.mjs";
 import DatePicker from "../DatePicker";
 import dayjs from "dayjs";
 import {
@@ -28,10 +29,6 @@ const SessionForm = () => {
   const [fee, setFee] = useState({});
   const [schedule, setSchedule] = useState({});
 
-  const handleSession = (e) => {
-    setSession((pre) => ({}));
-  };
-
   const hanldeSchedule = (day, name, value) => {
     setSchedule((prev) => ({
       ...prev,
@@ -54,11 +51,6 @@ const SessionForm = () => {
     onError: (err) => {},
     onSuccess: (message) => {},
   });
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await mutation.mutateAsync({ ...session, schedule, fee });
-  };
 
   const planDays = selectedDays.map((day) => (
     <Box>
@@ -128,22 +120,14 @@ const SessionForm = () => {
     </Box>
   ));
 
-  const { isLoading, data: docList } = useFetchDocs({
-    onError: (error) => {},
-    onSuccess: (message) => {},
-  });
+  const { isLoading: docLoading, doctors } = useMappedDocs();
 
-  if (isLoading) return <div>Koad</div>;
+  if (docLoading) return <div>Loading</div>;
 
-  console.log(docList);
-
-  const doctors = docList.map(({ docName, docSpecialization, key }) => ({
-    label: docName,
-    key: key,
-    specialization: docSpecialization.categoryHeader,
-  }));
-
-  console.log(session);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await mutation.mutateAsync({ ...session, schedule, fee });
+  };
 
   return (
     <form onSubmit={handleSubmit}>

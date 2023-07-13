@@ -50,7 +50,7 @@ const getEvent = async (req, res, next) => {
 
 const getEventByDoctor = async (req, res, next) => {
   try {
-    const { id } = req.query;
+    const { id } = req.params;
 
     console.log(id);
     //get the now date time
@@ -61,7 +61,6 @@ const getEventByDoctor = async (req, res, next) => {
       { key: id },
       { _id: 1, docSpecialization: 1 }
     );
-    console.log(now);
 
     //find session that is date time greater than current value
     const session = await Event.find(
@@ -73,8 +72,6 @@ const getEventByDoctor = async (req, res, next) => {
       },
       { _id: 0, doctor: 0 }
     ).populate("specialization", "-_id -categoryHeader");
-
-    console.log(session);
 
     res.status(200).json(session);
   } catch (err) {

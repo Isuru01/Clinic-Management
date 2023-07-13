@@ -31,7 +31,8 @@ function App() {
             <Route path="/" element={<SignIn />} />
             <Route path="/home" element={<Home />} />
             <Route path="/search" element={<Search />} />
-            <Route path="/appoinment/:session" element={<Appoinment />} />
+            <Route path="/pay/:session" element={<Pay />} />
+            <Route path="/appoinment/:doctor" element={<Appoinment />} />
             <Route path="/dashboard/:type/:action?" element={<Dashboard />} />
           </Routes>
         </GoogleOAuthProvider>
