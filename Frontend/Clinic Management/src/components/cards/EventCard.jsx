@@ -7,6 +7,7 @@ import {
   CardActions,
   CardContent,
   Typography,
+  Paper,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -22,31 +23,43 @@ const EventCard = ({ event, started, ended, day, patients, max }) => {
   };
 
   return (
-    <Card sx={{ display: "flex", justifyContent: "space-between" }}>
+    <Card
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        borderRadius: 0,
+        mb: 0.5,
+      }}
+    >
       <CardContent>
-        <Typography variant="h4">{date}</Typography>
+        <Typography variant="h5">{date}</Typography>
         <Typography variant="body1" color="text.secondary">
           start at {start} to {end}
         </Typography>
       </CardContent>
+
+      <Box
+        sx={{
+          ml: "auto",
+          p: 2,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+          backgroundColor: "#Ffa31a",
+          color: "#ffff",
+          borderRadius: 0,
+        }}
+      >
+        <Typography>Available No</Typography>
+        <Typography>{patients}</Typography>
+      </Box>
+
       <CardActions sx={{ p: 0 }}>
         <Button
           variant="contained"
           sx={{
             height: "100%",
-            width: "100px",
-            backgroundColor: "#Ffa31a",
-            color: "#ffff",
-            borderRadius: 0,
-          }}
-        >
-          Reserve
-        </Button>
-        <Button
-          variant="contained"
-          sx={{
-            height: "100%",
-            width: "100px",
             backgroundColor: "blue",
             color: "#ffff",
             borderRadius: 0,

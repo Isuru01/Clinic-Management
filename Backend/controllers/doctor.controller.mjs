@@ -12,12 +12,15 @@ const getPrivateDoctor = async (req, res) => {
 const getDoctor = async (req, res, next) => {
   const { id } = req.params;
 
+  console.log(id);
+
   try {
     const doctor = await Doctor.findOne(
       { key: id },
       { _id: 0, docPhone: 0 }
     ).populate("docSpecialization", "-_id");
 
+    console.log(doctor);
     res.status(200).json(doctor);
   } catch (err) {
     next(err);

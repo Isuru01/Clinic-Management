@@ -43,8 +43,6 @@ const SessionBooking = ({ doctor }) => {
   const [selected, setSelected] = useState();
   const [highlightedDays, setHighlitedDays] = useState([]);
 
-  console.log(selected);
-
   const { data: eventSet, isLoading } = useFetchDocEvent({
     onSuccess: (message) => {},
     onError: (message) => {},
@@ -66,14 +64,14 @@ const SessionBooking = ({ doctor }) => {
 
   if (isLoading) return <Loader />;
 
-  const filteredEvents = eventSet.filter(({ start }) =>
+  const filteredEvents = eventSet?.filter(({ start }) =>
     selected ? dayjs(start).isSame(selected, "day") : true
   );
 
-  const pageCount = Math.ceil(filteredEvents.length / eventCount);
+  const pageCount = Math.ceil(filteredEvents?.length / eventCount);
 
   const events = filteredEvents
-    .slice((currentPage - 1) * eventCount, currentPage * eventCount)
+    ?.slice((currentPage - 1) * eventCount, currentPage * eventCount)
     .map(({ key, countPatient, start, end, maxPatients }) => (
       <EventCard
         key={key}
@@ -89,39 +87,72 @@ const SessionBooking = ({ doctor }) => {
   const today = dayjs();
 
   return (
-    <Box>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <StaticDatePicker
-          sx={{ color: "black" }}
-          defaultValue={today}
-          minDate={today}
-          maxDate={today.add(1, "month")}
-          slots={{
-            day: ServerDay,
-          }}
-          slotProps={{
-            day: {
-              highlightedDays,
-            },
-          }}
-          onChange={(date) => setSelected(date)}
-        />
-      </LocalizationProvider>
+    <Box
+      sx={{
+        backgroundColor: "#FFFFFF",
+        color: "#000000",
+        pt: 4,
+        pb: 4,
+      }}
+    >
+      <Box
+        sx={{
+          display: { md: "grid" },
+          gridTemplateColumns: "repeat(2, 1fr)",
+          ml: { xs: 2, lg: 5 },
+          mr: { xs: 2, lg: 5 },
+        }}
+      >
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <StaticDatePicker
+            sx={{ color: "black" }}
+            defaultValue={today}
+            minDate={today}
+            maxDate={today.add(1, "month")}
+            slots={{
+              day: ServerDay,
+            }}
+            slotProps={{
+              day: {
+                highlightedDays,
+              },
+            }}
+            onChange={(date) => setSelected(date)}
+          />
+        </LocalizationProvider>
 
-      <Button onClick={() => setSelected()}>All</Button>
-      <Box>{events}</Box>
-      <Button
-        disabled={currentPage === 1}
-        onClick={() => setCurrentPage((prev) => prev - 1)}
-      >
-        Prev
-      </Button>
-      <Button
-        disabled={currentPage === pageCount}
-        onClick={() => setCurrentPage((prev) => prev + 1)}
-      >
-        Next
-      </Button>
+        <Box>
+          <Button
+            variant="contained"
+            sx={{ borderRadius: 0 }}
+            onClick={() => setSelected()}
+          >
+            All
+          </Button>
+
+          <Box>{events}</Box>
+          <Box sx={{ display: "flex" }}>
+            <Button
+              fullWidth
+              sx={{ borderRadius: 0 }}
+              variant="contained"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((prev) => prev - 1)}
+            >
+              Prev
+            </Button>
+            <Button
+              variant="contained"
+              fullWidth
+              sx={{ borderRadius: 0 }}
+              disabled={currentPage === pageCount}
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+            >
+              Next
+            </Button>
+          </Box>
+        </Box>
+      </Box>
     </Box>
   );
 };
